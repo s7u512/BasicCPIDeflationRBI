@@ -2,9 +2,17 @@
 
 Simple python script based on manually prepared data from CPI values published by RBI [here](https://www.rbi.org.in/scripts/AnnualPublications.aspx?head=Handbook%20of%20Statistics%20on%20Indian%20Economy)
 
-## Example
 
-Just run it in a terminal. Any python with pandas installed should work.
+## Requirements
+
+Python with pandas installed.
+
+## Usage
+
+Place `BasicCPIDeflationRBI.py` and `rbi_consumer_price_index.csv` in the same directory.
+Then just run the script in a terminal or command prompt. 
+
+## Example
 
 ```bash
 CPI Data Analysis Tool
@@ -24,7 +32,10 @@ Which is the known value year? Enter 'former' or 'latter': former
 Enter the known CPI value: 2000
 Different base years, need to splice.
 Spliced CPI for the latter year (2021-22) is: 3968.0
-
 ````
 
-## Please help improve the code.
+## Contribute
+Please help improve the code.
+
+## License
+This work is licensed under the GNU GPLv3 license. This work is free: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This work is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
