@@ -14,7 +14,7 @@ Then just run the script in a terminal or command prompt.
 
 ## Example
 
-```bash
+```shell
 CPI Data Analysis Tool
 Enter Former Year (format YYYY or YYYY-YY): 2010-11
 Enter Latter Year (format YYYY or YYYY-YY): 2021-22
