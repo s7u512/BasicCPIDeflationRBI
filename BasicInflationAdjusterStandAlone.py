@@ -205,7 +205,7 @@ def calculate_cpi(data, former_year, latter_year, cpi_measure, known_year, known
             print(f"{known_value} in {former_year} adjusted using {cpi_measure} and linking factor {linking_factor} for the year {latter_year} is: {adjusted_value}")
         else:
             # Adjust to former's base year
-            adjusted_value = adjust_value_using_linking_factor(known_value, linking_factor, adjust_to_latter=False)
+            adjusted_value = adjust_value_using_linking_factor(known_value, former_value, latter_value, linking_factor, adjust_to_latter=False)
             print(f"{known_value} in {latter_year} adjusted using {cpi_measure} and linking factor {linking_factor} for the year {former_year} is: {adjusted_value}")
 
 
