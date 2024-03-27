@@ -29,51 +29,7 @@ def get_year_input(prompt, data):
         else:
             print("Year not found in the dataset. Please try again.")
 
-def calculate_or_splice(data, former_year, latter_year, cpi_measure, known_year, known_value):
-    """
-    Checks for missing data, compares base years, and calculates the unknown CPI value if possible.
-    If data is missing, indicates so without suggesting splicing. If base years are different,
-    indicates that splicing is required.
-
-    :param data: DataFrame containing the CPI data.
-    :param former_year: The former year in the comparison.
-    :param latter_year: The latter year in the comparison.
-    :param cpi_measure: The CPI measure to use for calculation.
-    :param known_year: Indicates which year ('former' or 'latter') has the known value.
-    :param known_value: The known CPI value.
-    :return: A flag indicating whether splicing is required (True if required, False otherwise).
-    """
-    # Extract rows for the former and latter years
-    row_former = data[data['Year'].str.contains(former_year)]
-    row_latter = data[data['Year'].str.contains(latter_year)]
-    splicing_required = False
-
-    # Check for missing data in either year
-    if row_former.empty or row_latter.empty or \
-       pd.isna(row_former[cpi_measure].values[0]) or \
-       pd.isna(row_latter[cpi_measure].values[0]):
-        print("Data missing for one or both of the years. Cannot proceed.")
-    else:
-        # Both years have data, now check if base years are the same
-        if row_former['Base Year'].values[0] == row_latter['Base Year'].values[0]:
-            former_value = row_former[cpi_measure].values[0]
-            latter_value = row_latter[cpi_measure].values[0]
-
-            # Calculate the unknown value based on the known value and the CPI ratio
-            if known_year == 'former':
-                result = known_value * (latter_value / former_value)
-                print(f"Calculated CPI for the latter year: {result}")
-            else:
-                result = known_value * (former_value / latter_value)
-                print(f"Calculated CPI for the former year: {result}")
-        else:
-            # Base years are different, splicing is required
-            print("Different base years, need to splice.")
-            splicing_required = True
-
-    return splicing_required
-    
-# helper function for splice_cpi_values()
+# helper function for calculate()
 def determine_linking_factor(cpi_measure, base_year_former, base_year_latter):
     """
     Returns the linking factor based on the CPI measure and the transition between base years.
@@ -84,13 +40,19 @@ def determine_linking_factor(cpi_measure, base_year_former, base_year_latter):
             return 4.63
         elif base_year_former == "2001" and base_year_latter == "2016":
             return 2.88
+    elif cpi_measure == "CPI – IW (Food and Beverages)":
+        if base_year_former == "1982" and base_year_latter == "2001":
+            return 4.58
+        elif base_year_former == "2001" and base_year_latter == "2016":
+            return 2.88    
     elif cpi_measure == "CPI - AL":
         if base_year_former == "1960-61" and base_year_latter == "1986-87":
             return 5.89
     # Add more conditions as needed
     return None
 
-# helper function for splice_cpi_values()
+
+# helper function for calculate()
 def adjust_value_using_linking_factor(value, linking_factor, adjust_to_latter=True):
     """
     Adjusts a CPI value using the linking factor. If adjusting to latter base year, multiplies by the linking factor;
@@ -101,47 +63,83 @@ def adjust_value_using_linking_factor(value, linking_factor, adjust_to_latter=Tr
     else:
         return value / linking_factor
 
-# This function would only kick in if splicing_required = True
-def splice_cpi_values(data, former_year, latter_year, cpi_measure, known_year, known_value):
-    # Determine the base years for former and latter years
-    base_year_former = data[data['Year'].str.contains(former_year)]['Base Year'].values[0]
-    base_year_latter = data[data['Year'].str.contains(latter_year)]['Base Year'].values[0]
+def calculate_cpi(data, former_year, latter_year, cpi_measure, known_year, known_value):
+    """
+    Calculates the unknown CPI value if base years are the same, or adjusts CPI values when splicing is required 
+    due to different base years, taking into account only rows where the cpi_measure is populated.
+
+    :param data: DataFrame containing the CPI data.
+    :param former_year: The former year in the comparison.
+    :param latter_year: The latter year in the comparison.
+    :param cpi_measure: The CPI measure to use for calculation or adjustment.
+    :param known_year: Indicates which year ('former' or 'latter') has the known value.
+    :param known_value: The known CPI value.
+    """
+    # Filter data for the specific CPI measure being not null
+    data_filtered = data[data[cpi_measure].notnull()]
     
-    # Determine the appropriate linking factor based on CPI measure and base years
-    linking_factor = determine_linking_factor(cpi_measure, base_year_former, base_year_latter)
-    
-    
-    if linking_factor is None:
-        print("Unable to determine the linking factor for the given CPI measure and base years.")
+    # Extract rows for the former and latter years with cpi_measure populated
+    row_former = data_filtered[data_filtered['Year'].str.contains(former_year)]
+    row_latter = data_filtered[data_filtered['Year'].str.contains(latter_year)]
+
+    # Check for missing data in either year
+    if row_former.empty or row_latter.empty:
+        print("Data missing for one or both of the years. Cannot proceed.")
         return
-    
-    # Retrieve the CPI values for former and latter years
-    row_former = data[data['Year'].str.contains(former_year)]
-    row_latter = data[data['Year'].str.contains(latter_year)]
-    cpi_value_former = row_former[cpi_measure].values[0]
-    cpi_value_latter = row_latter[cpi_measure].values[0]
-    
-    # Adjust the known value using the linking factor
-    if known_year == 'former':
-        # If the known value is in the former year, adjust it to the latter year's base year before calculating
-        adjusted_value = known_value * linking_factor
-        # Calculate the CPI value for the latter year using the ratio of CPI values from the data
-        calculated_value = adjusted_value * (cpi_value_latter / cpi_value_former)
-        print(f"Spliced CPI for the latter year ({latter_year}) is: {calculated_value}")
+
+    base_year_former = row_former['Base Year'].values[0]
+    base_year_latter = row_latter['Base Year'].values[0]
+
+    # Proceed directly if base years are the same
+    if base_year_former == base_year_latter:
+        former_value = row_former[cpi_measure].values[0]
+        latter_value = row_latter[cpi_measure].values[0]
+        
+        if known_year == 'former':
+            result = known_value * (latter_value / former_value)
+            print(f"{known_value} in {former_year} adjusted using {cpi_measure} for the year {latter_year} is: {adjusted_value}")
+        else:
+            result = known_value * (former_value / latter_value)
+            print(f"{known_value} in {latter_year} adjusted using {cpi_measure} for the year {former_year} is: {adjusted_value}")
+
     else:
-        # If the known value is in the latter year, adjust it to the former year's base year before calculating
-        adjusted_value = known_value / linking_factor
-        # Calculate the CPI value for the former year using the ratio of CPI values from the data
-        calculated_value = adjusted_value * (cpi_value_former / cpi_value_latter)
-        print(f"Spliced CPI for the former year ({former_year}) is: {calculated_value}")
-    
-    return calculated_value
+        # Base years are different, determine the linking factor
+        linking_factor = determine_linking_factor(cpi_measure, base_year_former, base_year_latter)
+        
+        if linking_factor is None:
+            print("Unable to determine the linking factor for the given CPI measure and base years.")
+            return
+        
+        # Adjust the CPI value using the linking factor
+        if known_year == 'former':
+            # Adjust to latter's base year
+            adjusted_value = adjust_value_using_linking_factor(known_value, linking_factor, adjust_to_latter=True)
+            print(f"{known_value} in {former_year} adjusted using {cpi_measure} and linking factor {linking_factor} for the year {latter_year} is: {adjusted_value}")
+        else:
+            # Adjust to former's base year
+            adjusted_value = adjust_value_using_linking_factor(known_value, linking_factor, adjust_to_latter=False)
+            print(f"{known_value} in {latter_year} adjusted using {cpi_measure} and linking factor {linking_factor} for the year {former_year} is: {adjusted_value}")
 
 
 def main(data):
     print("CPI Data Analysis Tool")
-    former_year = get_year_input("Enter Former Year (format YYYY or YYYY-YY): ", data)
-    latter_year = get_year_input("Enter Latter Year (format YYYY or YYYY-YY): ", data)
+    while True:  # Start a loop to keep asking until the condition is met
+        former_year = get_year_input("Enter Former Year (format YYYY or YYYY-YY): ", data)
+        latter_year = get_year_input("Enter Latter Year (format YYYY or YYYY-YY): ", data)
+
+        # Convert years to integers for comparison
+        try:
+            former_year_int = int(former_year[:4])  # Extract the first 4 characters to handle YYYY-YY format
+            latter_year_int = int(latter_year[:4])  # Extract the first 4 characters to handle YYYY-YY format
+        except ValueError:
+            print("Error converting year inputs to integers. Please ensure the format is correct.")
+            continue
+
+        # Check if former year is before latter year
+        if former_year_int < latter_year_int:
+            break  # Exit the loop if the condition is met
+        else:
+            print("The former year must come before the latter year. Please re-enter both years.")
 
     cpi_measure = choose_cpi_measure(data)
     
@@ -159,10 +157,7 @@ def main(data):
         except ValueError:
             print("Invalid input. Please enter a numeric value.")
     
-    splicing_required = calculate_or_splice(data, former_year, latter_year, cpi_measure, known_year, known_value)
-    
-    if splicing_required:
-        splice_cpi_values(data, former_year, latter_year, cpi_measure, known_year, known_value)
+    calculate_cpi(data, former_year, latter_year, cpi_measure, known_year, known_value)
 
 if __name__ == "__main__":
     main(data)
