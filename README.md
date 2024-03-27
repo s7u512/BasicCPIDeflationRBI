@@ -1,4 +1,4 @@
-# BasicCPIDeflationRBI
+# Adjust values for Inflation
 
 Simple python script based on manually prepared data from CPI values published by RBI [here](https://www.rbi.org.in/scripts/AnnualPublications.aspx?head=Handbook%20of%20Statistics%20on%20Indian%20Economy)
 
