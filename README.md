@@ -4,6 +4,12 @@ Simple python script based on manually prepared data from CPI values published b
 
 The script can inflate or deflate values from one year to another. It can also use linkage factors if RBI has specified it, to calculate values between years with different base years.
 
+## New
+
+Stand alone executable for Windows is now available [here](https://github.com/s7u512/BasicCPIDeflationRBI/releases/)
+
+A linux distributable is coming soon.
+
 
 ## Requirements
 
