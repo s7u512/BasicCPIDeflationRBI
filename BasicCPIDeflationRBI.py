@@ -96,10 +96,10 @@ def calculate_cpi(data, former_year, latter_year, cpi_measure, known_year, known
         latter_value = row_latter[cpi_measure].values[0]
         
         if known_year == 'former':
-            result = known_value * (latter_value / former_value)
+            adjusted_value = known_value * (latter_value / former_value)
             print(f"{known_value} in {former_year} adjusted using {cpi_measure} for the year {latter_year} is: {adjusted_value}")
         else:
-            result = known_value * (former_value / latter_value)
+            adjusted_value = known_value * (former_value / latter_value)
             print(f"{known_value} in {latter_year} adjusted using {cpi_measure} for the year {former_year} is: {adjusted_value}")
 
     else:
