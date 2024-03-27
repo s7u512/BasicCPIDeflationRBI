@@ -29,9 +29,9 @@ Example output to find how much has Rs.2000 in 2010-11 become in 2021-22 using C
 
 
 ```shell
-CPI Data Analysis Tool
-Enter Former Year (format YYYY or YYYY-YY): 2010-11
-Enter Latter Year (format YYYY or YYYY-YY): 2021-22
+Basic Inflation Adjuster Tool
+Enter Former Year (format YYYY or YYYY-YY): 1998
+Enter Latter Year (format YYYY or YYYY-YY): 2007
 
 Choose a CPI measure by entering the corresponding number:
 1. CPI - IW
@@ -42,10 +42,9 @@ Choose a CPI measure by entering the corresponding number:
 6. CPI All India General Index Combined
 7. CPI All India Combined: Food and beverages
 1
-Which is the known value year? Enter 'former' or 'latter': former
-Enter the known CPI value: 2000
-Different base years, need to splice.
-Spliced CPI for the latter year (2021-22) is: 3968.0
+Which is the known value year? Enter 'former' or 'latter': latter
+Enter the known CPI value: 784
+784.0 in 2007 adjusted using CPI - IW and linking factor 4.63 for the year 1998 is: 169.3304535637149
 ````
 
 ## Contribute
