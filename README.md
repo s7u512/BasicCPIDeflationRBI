@@ -11,7 +11,11 @@ Python with pandas installed.
 
 Install python,
 open terminal, type 
-`pip install pandas`
+```shell
+git clone https://github.com/s7u512/BasicCPIDeflationRBI.git
+cd BasicCPIDeflationRBI
+pip install pandas
+```
 
 ## Usage
 
