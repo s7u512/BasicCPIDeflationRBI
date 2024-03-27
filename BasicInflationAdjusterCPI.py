@@ -29,7 +29,7 @@ def get_year_input(prompt, data):
         else:
             print("Year not found in the dataset. Please try again.")
 
-# helper function for calculate()
+# helper function for calculate_cpi()
 def determine_linking_factor(cpi_measure, base_year_former, base_year_latter):
     """
     Returns the linking factor based on the CPI measure and the transition between base years.
@@ -52,16 +52,16 @@ def determine_linking_factor(cpi_measure, base_year_former, base_year_latter):
     return None
 
 
-# helper function for calculate()
-def adjust_value_using_linking_factor(value, linking_factor, adjust_to_latter=True):
+# helper function for calculate_cpi()
+def adjust_value_using_linking_factor(value, former_value, latter_value, linking_factor, adjust_to_latter=True):
     """
     Adjusts a CPI value using the linking factor. If adjusting to latter base year, multiplies by the linking factor;
     if adjusting to former, divides by the linking factor.
     """
     if adjust_to_latter:
-        return value * linking_factor
+        return value * (latter_value / former_value) * linking_factor
     else:
-        return value / linking_factor
+        return value * (former_value / latter_value) / linking_factor
 
 def calculate_cpi(data, former_year, latter_year, cpi_measure, known_year, known_value):
     """
@@ -105,6 +105,8 @@ def calculate_cpi(data, former_year, latter_year, cpi_measure, known_year, known
     else:
         # Base years are different, determine the linking factor
         linking_factor = determine_linking_factor(cpi_measure, base_year_former, base_year_latter)
+        former_value = row_former[cpi_measure].values[0]
+        latter_value = row_latter[cpi_measure].values[0]
         
         if linking_factor is None:
             print("Unable to determine the linking factor for the given CPI measure and base years.")
@@ -113,7 +115,7 @@ def calculate_cpi(data, former_year, latter_year, cpi_measure, known_year, known
         # Adjust the CPI value using the linking factor
         if known_year == 'former':
             # Adjust to latter's base year
-            adjusted_value = adjust_value_using_linking_factor(known_value, linking_factor, adjust_to_latter=True)
+            adjusted_value = adjust_value_using_linking_factor(known_value, former_value, latter_value, linking_factor, adjust_to_latter=True)
             print(f"{known_value} in {former_year} adjusted using {cpi_measure} and linking factor {linking_factor} for the year {latter_year} is: {adjusted_value}")
         else:
             # Adjust to former's base year
