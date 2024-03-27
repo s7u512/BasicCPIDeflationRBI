@@ -7,6 +7,10 @@ Simple python script based on manually prepared data from CPI values published b
 
 Python with pandas installed.
 
+Install python,
+open terminal,
+`pip install pandas`
+
 ## Usage
 
 Place `BasicCPIDeflationRBI.py` and `rbi_consumer_price_index.csv` in the same directory.
