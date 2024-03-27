@@ -2,6 +2,8 @@
 
 Simple python script based on manually prepared data from CPI values published by RBI [here](https://www.rbi.org.in/scripts/AnnualPublications.aspx?head=Handbook%20of%20Statistics%20on%20Indian%20Economy)
 
+The script can inflate or deflate values from one year to another. It can also use linkage factors if RBI has specified it, to calculate values between years with different base years.
+
 
 ## Requirements
 
@@ -17,6 +19,9 @@ Place `BasicCPIDeflationRBI.py` and `rbi_consumer_price_index.csv` in the same d
 Then just run the script in a terminal or command prompt. 
 
 ## Example
+
+Example output to find how much has Rs.2000 in 2010-11 become in 2021-22 using CPI - IW is given below
+
 
 ```shell
 CPI Data Analysis Tool
