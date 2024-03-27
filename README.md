@@ -15,7 +15,7 @@ open terminal, type
 git clone https://github.com/s7u512/BasicCPIDeflationRBI.git
 cd BasicCPIDeflationRBI
 pip install pandas
-python BasicCPIDeflationRBI.py
+python BasicInflationAdjuster.py
 ```
 
 ## Usage
