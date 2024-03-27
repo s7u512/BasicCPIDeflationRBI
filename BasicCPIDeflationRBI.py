@@ -122,7 +122,7 @@ def calculate_cpi(data, former_year, latter_year, cpi_measure, known_year, known
 
 
 def main(data):
-    print("CPI Data Analysis Tool")
+    print("Basic Inflation Adjuster Tool")
     while True:  # Start a loop to keep asking until the condition is met
         former_year = get_year_input("Enter Former Year (format YYYY or YYYY-YY): ", data)
         latter_year = get_year_input("Enter Latter Year (format YYYY or YYYY-YY): ", data)
