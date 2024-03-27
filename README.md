@@ -20,7 +20,10 @@ python BasicInflationAdjuster.py
 
 ## Usage
 
-Place `BasicCPIDeflationRBI.py` and `rbi_consumer_price_index.csv` in the same directory.
+### StandAlone version
+Just run `BasicInflationAdjusterStandAlone.py` in a terminal or command prompt.
+### CSV dependent version
+Place `BasicInflationAdjusterCPI.py` and `rbi_consumer_price_index.csv` in the same directory.
 Then just run the script in a terminal or command prompt. 
 
 ## Example
