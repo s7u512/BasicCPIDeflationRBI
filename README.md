@@ -8,7 +8,7 @@ Simple python script based on manually prepared data from CPI values published b
 Python with pandas installed.
 
 Install python,
-open terminal,
+open terminal, type 
 `pip install pandas`
 
 ## Usage
