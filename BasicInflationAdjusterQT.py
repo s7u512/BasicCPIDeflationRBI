@@ -195,11 +195,15 @@ class CPIApp(QWidget):
                 return 4.63
             elif base_year_former == "2001" and base_year_latter == "2016":
                 return 2.88
+            elif base_year_former == "1982" and base_year_latter == "2016":
+                return 4.63*2.88
         elif cpi_measure == "CPI – IW (Food and Beverages)":
             if base_year_former == "1982" and base_year_latter == "2001":
                 return 4.58
             elif base_year_former == "2001" and base_year_latter == "2016":
-                return 2.88    
+                return 2.88
+            elif base_year_former == "1982" and base_year_latter == "2016":
+                return 4.58*2.88
         elif cpi_measure == "CPI - AL":
             if base_year_former == "1960-61" and base_year_latter == "1986-87":
                 return 5.89
